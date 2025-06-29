@@ -43,32 +43,37 @@
   <div id="result"></div>
 
   <script>
-    // Замените на ваш Project URL из Neon Data API
+    // Ваш Neon Data API endpoint
     const API = 'https://app-divine-pine-55755911.dpl.myneon.app/chat_message';
 
     document.getElementById('sendBtn').onclick = async () => {
-      const btn = document.getElementById('sendBtn');
-      const resEl = document.getElementById('result');
-      const text = document.getElementById('message').value.trim();
-
-      if (!text) {
+      const textEl = document.getElementById('message');
+      const resEl  = document.getElementById('result');
+      const content = textEl.value.trim();
+      if (!content) {
         resEl.textContent = 'Введите текст сообщения.';
         return;
       }
 
-      btn.disabled = true;
+      // получаем текущее время в ISO-формате
+      const timestamp = new Date().toISOString();
+
       resEl.textContent = 'Отправка…';
+      document.getElementById('sendBtn').disabled = true;
 
       try {
         const resp = await fetch(API, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ content: text })
+          body: JSON.stringify({
+            content: content,
+            timestamp: timestamp   // <-- передаём время клиента
+          })
         });
 
         if (resp.status === 201) {
           resEl.textContent = '✅ Сообщение отправлено!';
-          document.getElementById('message').value = '';
+          textEl.value = '';
         } else {
           const err = await resp.json();
           resEl.textContent = 'Ошибка: ' + (err.message || resp.status);
@@ -76,7 +81,7 @@
       } catch (e) {
         resEl.textContent = 'Сетевая ошибка';
       } finally {
-        btn.disabled = false;
+        document.getElementById('sendBtn').disabled = false;
       }
     };
   </script>
