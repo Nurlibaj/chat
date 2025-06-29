@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Chat Sender</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      font-size: 16px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+    #result {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>Отправить сообщение в чат</h2>
+  <textarea id="message" placeholder="Ваше сообщение…"></textarea><br>
+  <button id="sendBtn">Отправить</button>
+  <div id="result"></div>
+
+  <script>
+    // Замените на ваш Project URL (без суффиксов) из Neon Data API
+    const API = 'https://app-divine-pine-55755911.dpl.myneon.app/chat_message';
+
+    document.getElementById('sendBtn').onclick = async () => {
+      const btn = document.getElementById('sendBtn');
+      const resEl = document.getElementById('result');
+      const text = document.getElementById('message').value.trim();
+
+      if (!text) {
+        resEl.textContent = 'Введите текст сообщения.';
+        return;
+      }
+
+      btn.disabled = true;
+      resEl.textContent = 'Отправка…';
+
+      try {
+        const resp = await fetch(API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: text })
+        });
+
+        if (resp.status === 201) {
+          resEl.textContent = '✅ Сообщение отправлено!';
+          document.getElementById('message').value = '';
+        } else {
+          const err = await resp.json();
+          resEl.textContent = 'Ошибка: ' + (err.message || resp.status);
+        }
+      } catch (e) {
+        resEl.textContent = 'Сетевая ошибка';
+      } finally {
+        btn.disabled = false;
+      }
+    };
+  </script>
+</body>
+</html>
