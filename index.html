@@ -26,10 +26,6 @@
       border-radius: 4px;
       cursor: pointer;
     }
-    button:disabled {
-      opacity: 0.6;
-      cursor: default;
-    }
     #result {
       margin-top: 15px;
       font-weight: bold;
@@ -43,7 +39,7 @@
   <div id="result"></div>
 
   <script>
-    // Ваш Neon Data API endpoint
+    // Замените на ваш Neon Data API endpoint без /public
     const API = 'https://app-divine-pine-55755911.dpl.myneon.app/chat_message';
 
     document.getElementById('sendBtn').onclick = async () => {
@@ -55,11 +51,12 @@
         return;
       }
 
-      // получаем текущее время в ISO-формате
+      // 1) Получаем текущее время клиента
       const timestamp = new Date().toISOString();
 
-      resEl.textContent = 'Отправка…';
+      // 2) Формируем запрос
       document.getElementById('sendBtn').disabled = true;
+      resEl.textContent = 'Отправка…';
 
       try {
         const resp = await fetch(API, {
@@ -67,7 +64,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             content: content,
-            timestamp: timestamp   // <-- передаём время клиента
+            timestamp: timestamp
           })
         });
 
