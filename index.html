@@ -33,9 +33,9 @@
   </style>
 </head>
 <body>
-  <h2>Отправить сообщение в чат</h2>
-  <textarea id="message" placeholder="Ваше сообщение…"></textarea><br>
-  <button id="sendBtn">Отправить</button>
+  <h2>Send message to chat</h2>
+  <textarea id="message" placeholder="Your message…"></textarea><br>
+  <button id="sendBtn">Send</button>
   <div id="result"></div>
 
   <script>
@@ -47,7 +47,7 @@
       const resEl  = document.getElementById('result');
       const content = textEl.value.trim();
       if (!content) {
-        resEl.textContent = 'Введите текст сообщения.';
+        resEl.textContent = 'Enter text of message.';
         return;
       }
 
@@ -69,14 +69,14 @@
         });
 
         if (resp.status === 201) {
-          resEl.textContent = '✅ Сообщение отправлено!';
+          resEl.textContent = '✅ Message sent!';
           textEl.value = '';
         } else {
           const err = await resp.json();
           resEl.textContent = 'Ошибка: ' + (err.message || resp.status);
         }
       } catch (e) {
-        resEl.textContent = 'Сетевая ошибка';
+        resEl.textContent = 'Network error';
       } finally {
         document.getElementById('sendBtn').disabled = false;
       }
